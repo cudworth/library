@@ -1,16 +1,18 @@
-import { createAndAppendElement, titleCase, uniqueNumericString } from './misc';
+import { titleCase } from './misc';
 
 function View() {
   const self = {};
 
   function init() {
-    self.parent = document.body;
-    self.root = createAndAppendElement(self.parent, 'div', { id: 'root' });
-    self.drop_menus = {};
-    // self.header = createAndAppendElement(self.root, 'div', { id: 'header' });
-    // self.content = createAndAppendElement(self.root, 'div', { id: 'content' });
+    ['root', 'header', 'body', 'footer'].forEach((block) => {
+      self[block] = document.createElement('div');
+      self[block].id = block;
+    });
+    document.body.append(self.root);
+    self.root.append(self.header, self.body, self.footer);
   }
 
+  /*
   function drawForm(keys, obj) {
     const form = createAndAppendElement(self.content, 'form', {});
     const ol = createAndAppendElement(form, 'ol', {});
@@ -36,36 +38,42 @@ function View() {
     });
     return obj;
   }
+  */
 
-  function clear() {
-    while (self.content.lastChild) {
-      self.content.lastChild.remove();
+  function clear(block) {
+    while (self[block].lastChild) {
+      self[block].lastChild.remove();
     }
   }
 
   function setTitle(string) {
-    self.title = string;
     document.title = string;
   }
 
-  function setHeader(string) {
-    self.header.textContent = string;
+  function setTextContent(block, string) {
+    self[block].textContent = string;
   }
 
-  function createParagraph(string, parent = self.root, attributes = {}) {
-    const p = createAndAppendElement(parent, 'p', attributes);
+  function createParagraph(block, string) {
+    const p = document.createElement('p');
     p.textContent = string;
+    self[block].append(p);
   }
 
-  function drawCard(keys, obj, onClick) {
-    const card = createAndAppendElement(self.content, 'div', { class: 'card' });
-    card.addEventListener('click', () => onClick);
+  function drawCard(block, keys, obj, onClick) {
+    const div = document.createElement('div');
+    div.class = 'card';
+    div.addEventListener('click', () => onClick);
     keys.forEach((key) => {
-      const span = createAndAppendElement(card, 'span', { class: 'field' });
+      const span = document.createElement('span');
+      span.class = 'field';
       span.textContent = `${titleCase(key)}: ${obj[key]}`;
+      div.append(span);
     });
+    self[block].append(div);
   }
 
+  /*
   function drawDetailCard(keys, obj) {
     const card = createAndAppendElement(self.content, 'div', {
       class: 'detail_card',
@@ -75,72 +83,79 @@ function View() {
       div.textContent = `${titleCase(key)}: ${obj[key]}`;
     });
   }
+  */
 
-  function drawButton(text, onClick) {
-    const button = createAndAppendElement(self.content, 'button', {});
+  function drawButton(block, text, onClick) {
+    const button = document.createElement('button');
     button.textContent = text;
     button.addEventListener('click', () => onClick);
+    self[block].append(button);
   }
 
-  function createNavBar(parent = self.root) {
-    self.navbar = createAndAppendElement(parent, 'div', { id: 'navbar' });
+  function createNavBar(block) {
+    self.navbar = document.createElement('div');
+    self.navbar.id = 'navbar';
+    self[block].append(self.navbar);
   }
 
-  function createNavLink(text, onClick, attributes = { class: 'navlink' }) {
-    const div = createAndAppendElement(self.navbar, 'div', attributes);
-    const link = createAndAppendElement(div, 'a', attributes);
-    link.textContent = text;
-    link.addEventListener('click', () => onClick());
-    return [div, link];
+  function createNavLink(text, onClick) {
+    const div = document.createElement('div');
+    div.class = 'navlink';
+    div.textContent = text;
+    div.addEventListener('click', () => onClick);
+    self.navbar.append(div);
   }
 
-  function createDropMenu(menuItems, onClick, parent = self.root) {
-    const id = uniqueNumericString(Object.keys(self.drop_menus));
+  function createDropMenu(block, title, menuItems, onClick) {
+    const menu = document.createElement('div');
+    menu.setAttribute('class', 'drop_menu');
+    menu.textContent = title;
 
-    const menu = createAndAppendElement(parent, 'div', {
-      class: 'drop_menu_hidden',
+    const contents = document.createElement('div');
+    contents.setAttribute('class', 'drop_menu_hidden');
+
+    menu.addEventListener('mouseover', () => {
+      contents.setAttribute('class', 'drop_menu_visible');
     });
 
-    parent.style.position = 'relative';
-
-    parent.addEventListener('mouseover', () => {
-      menu.setAttribute('class', 'drop_menu_visible');
-    });
-
-    parent.addEventListener('mouseout', () => {
-      menu.setAttribute('class', 'drop_menu_hidden');
+    menu.addEventListener('mouseout', () => {
+      contents.setAttribute('class', 'drop_menu_hidden');
     });
 
     for (let i = 0; i < menuItems.length; i += 1) {
-      const item = createAndAppendElement(menu, 'div', {});
+      const item = document.createElement('div');
       item.textContent = menuItems[i];
       item.setAttribute('class', 'drop_menu_content');
       item.addEventListener('click', onClick[i]);
+      contents.append(item);
     }
-    self.drop_menus[id] = menu;
-    return id;
+
+    menu.append(contents);
+    self[block].append(menu);
   }
 
-  function deleteDropMenu(id) {
-    delete self.drop_menus[id];
+  function createDrawer(block, contents, onClickFn) {
+    const chest = document.createElement('div');
+  }
+
+  function setAttributes(element, attributes) {
+    Object.keys(attributes).forEach((key) => {
+      element.setAttribute(key.toString(), attributes[key]);
+    });
   }
 
   init();
 
   return {
     clear,
-    drawForm,
-    readForm,
+    setTextContent,
     setTitle,
-    setHeader,
     drawCard,
-    drawDetailCard,
     drawButton,
     createParagraph,
     createNavBar,
     createNavLink,
     createDropMenu,
-    deleteDropMenu,
   };
 }
 

@@ -8,20 +8,18 @@ myStyle.addLink('../assets/style.css');
 
 const myView = View();
 
-myView.setTitle('Library Testing');
-myView.createNavBar();
+myView.setTitle('Library Testing Page');
+myView.setTextContent('header', 'Library Testing');
+myView.createNavBar('footer');
 myView.createNavLink('link 1', () => null);
-const [div, link] = myView.createNavLink('link 2', () => null);
+myView.createNavLink('link 2', () => null);
 myView.createNavLink('link 3', () => null);
 
-function hello(e) {
-  console.log(e.target);
-}
+lorem.forEach((paragraph) => {
+  myView.createParagraph('body', paragraph);
+});
+
+function hello() {}
 const listItems = ['Menu Item #1', 'Menu Item #2', 'Menu Item #3'];
 const clickFn = [hello, hello, hello];
-
-const id = myView.createDropMenu(listItems, clickFn, div);
-
-lorem.forEach((paragraph) => {
-  myView.createParagraph(paragraph);
-});
+myView.createDropMenu('body', 'Hamburger Menu', listItems, clickFn);

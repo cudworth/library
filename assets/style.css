@@ -1,3 +1,7 @@
+.drop_menu {
+  position: relative;
+}
+
 .drop_menu_hidden {
   display: none;
 }
@@ -33,4 +37,13 @@
 }
 
 .drawer_visible {
+  display: block;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.67);
+  width: 100vw;
+  height: 100vh;
+}
+
+p {
+  margin: 0.67em;
 }
