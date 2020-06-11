@@ -1,0 +1,36 @@
+.drop_menu_hidden {
+  display: none;
+}
+
+.drop_menu_visible {
+  display: block;
+  position: absolute;
+  min-width: min-content;
+  width: max-content;
+  max-width: 100vw;
+  left: 0;
+  z-index: 1;
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid rgba(128, 128, 128, 0.507);
+}
+
+.drop_menu_content {
+  padding: 0.67em;
+  border: 1px solid rgba(128, 128, 128, 0.507);
+}
+
+.drop_menu_content:hover {
+  background-color: rgb(210, 253, 204);
+}
+
+.navlink {
+  display: inline;
+}
+
+.drawer_hidden {
+  display: none;
+}
+
+.drawer_visible {
+}
