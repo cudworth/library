@@ -180,99 +180,84 @@ function View() {
 
   function createCarousel(block, width, height, images) {
     const carousel = {};
-
-    ['frame', 'slides', 'prevBtn', 'nextBtn', 'navBar'].forEach((element) => {
-      carousel[element] = document.createElement('div');
-      carousel[element].className = `carousel_${element}`;
-    });
-
-    carousel.frame.append(
-      carousel.slides,
-      carousel.prevBtn,
-      carousel.nextBtn,
-      carousel.navBar
-    );
-
-    carousel.prevBtn.addEventListener('click', () => prevSlide());
-
-    carousel.nextBtn.addEventListener('click', () => nextSlide());
-
-    carousel.frame.style.width = width;
-    carousel.frame.style.height = height;
-
+    let currentSlide = 0;
+    const navLinkIcons = [];
     const navLinkWidth = `${(1 / images.length) * 100}%`;
 
-    for (let i = 0; i < images.length; i += 1) {
-      const slide = document.createElement('img');
-      slide.className = 'carousel_slide';
-      slide.src = images[i];
-      slide.style.width = width;
-      slide.style.height = height;
-      carousel.slides.append(slide);
-
-      const navLink = document.createElement('div');
-      navLink.className = 'carousel_navLink';
-      navLink.style.width = navLinkWidth;
-      navLink.addEventListener('click', () => {
-        changeSlide(i);
-      });
-
-      const icon = carouselIcon(10);
-      icon.className = 'carousel_icon';
-
-      navLink.append(icon);
-
-      carousel.navBar.append(navLink);
-    }
-
-    carousel.currentSlide = 0;
-
     function changeSlide(index) {
-      carousel.currentSlide = index;
+      navLinkIcons[currentSlide].className = 'carousel_icon';
+      currentSlide = index;
+      navLinkIcons[currentSlide].className = 'carousel_icon_selected';
       carousel.slides.style.left = `${-100 * index}%`;
     }
 
     function nextSlide() {
-      if (carousel.currentSlide < images.length - 1) {
-        changeSlide(carousel.currentSlide + 1);
+      if (currentSlide < images.length - 1) {
+        changeSlide(currentSlide + 1);
       }
     }
 
     function prevSlide() {
-      if (carousel.currentSlide > 0) {
-        changeSlide(carousel.currentSlide - 1);
+      if (currentSlide > 0) {
+        changeSlide(currentSlide - 1);
       }
     }
 
-    carousel.frame.addEventListener('mouseover', (e) => {
-      carousel.navBar.className = 'carousel_navBar';
-    });
+    function initCarousel() {
+      ['frame', 'slides', 'prevBtn', 'nextBtn', 'navBar'].forEach((element) => {
+        carousel[element] = document.createElement('div');
+        carousel[element].className = `carousel_${element}`;
+      });
 
-    carousel.frame.addEventListener('mouseout', (e) => {
-      carousel.navBar.className = 'hidden';
-    });
+      carousel.frame.append(
+        carousel.slides,
+        carousel.prevBtn,
+        carousel.nextBtn,
+        carousel.navBar
+      );
 
-    function carouselIcon(radius) {
-      const canvas = document.createElement('canvas');
-      canvas.style.width = `${2 * radius}px`;
-      canvas.style.height = `${2 * radius}px`;
+      carousel.frame.style.width = width;
+      carousel.frame.style.height = height;
 
-      //canvas.style.width = '200px';
-      //canvas.style.height = '200px';
+      carousel.prevBtn.addEventListener('click', () => prevSlide());
+      carousel.nextBtn.addEventListener('click', () => nextSlide());
 
-      const ctx = canvas.getContext('2d');
-      ctx.beginPath();
-      ctx.arc(radius, radius, radius, 0, 2 * Math.PI);
-      ctx.strokeStyle = 'white';
-      ctx.lineWidth = 2;
+      for (let i = 0; i < images.length; i += 1) {
+        const slide = document.createElement('img');
+        slide.className = 'carousel_slide';
+        slide.src = images[i];
+        slide.style.width = width;
+        slide.style.height = height;
+        carousel.slides.append(slide);
 
-      ctx.stroke();
-      ctx.fillStyle = 'black';
-      ctx.fill();
-      return canvas;
+        const navLink = document.createElement('div');
+        navLink.className = 'carousel_navLink';
+        navLink.style.width = navLinkWidth;
+        navLink.addEventListener('click', () => {
+          changeSlide(i);
+        });
+
+        const icon = document.createElement('div');
+        icon.className = 'carousel_icon';
+        navLink.append(icon);
+        navLinkIcons.push(icon);
+        carousel.navBar.append(navLink);
+      }
+
+      carousel.frame.addEventListener('mouseover', () => {
+        carousel.navBar.className = 'carousel_navBar';
+      });
+
+      carousel.frame.addEventListener('mouseout', () => {
+        carousel.navBar.className = 'hidden';
+      });
+
+      changeSlide(0);
+
+      self[block].append(carousel.frame);
     }
 
-    self[block].append(carousel.frame);
+    initCarousel();
   }
 
   function setAttributes(element, attributes) {

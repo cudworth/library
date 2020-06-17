@@ -167,4 +167,24 @@ p {
 }
 
 .carousel_icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid white;
+  width: 16px;
+  height: 16px;
+  border-radius: 10px;
+}
+
+.carousel_icon_selected {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 2px solid white;
+  width: 16px;
+  height: 16px;
+  border-radius: 10px;
 }
