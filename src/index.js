@@ -19,7 +19,26 @@ lorem.forEach((paragraph) => {
   myView.createParagraph('body', paragraph);
 });
 
-function hello() {}
-const listItems = ['Menu Item #1', 'Menu Item #2', 'Menu Item #3'];
-const clickFn = [hello, hello, hello];
-myView.createDropMenu('body', 'Hamburger Menu', listItems, clickFn);
+function hello(e) {
+  console.log(e.target);
+}
+
+const menuOptions = [];
+for (let i = 1; i < 6; i += 1) {
+  menuOptions.push({
+    icon: null,
+    text: 'menu option',
+    fn: hello,
+  });
+}
+
+myView.createDropMenu('body', 'Hamburger Menu', menuOptions);
+myView.createDrawer('header', 'DRAWER BUTTON', 'Drawer Menu', menuOptions);
+
+const images = [
+  '../assets/images/image_1.jpg',
+  '../assets/images/image_2.jpg',
+  '../assets/images/image_3.jpg',
+  '../assets/images/image_4.jpg',
+];
+myView.createCarousel('header', '800px', '600px', images);
