@@ -119,6 +119,7 @@ p {
   margin-right: auto;
   overflow: hidden;
   background: black;
+  cursor: pointer;
 }
 
 .carousel_slides {
@@ -166,7 +167,7 @@ p {
   height: 100%;
 }
 
-.carousel_icon {
+.carousel_navIcon {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -177,7 +178,7 @@ p {
   border-radius: 10px;
 }
 
-.carousel_icon_selected {
+.carousel_navIcon_selected {
   position: absolute;
   left: 50%;
   top: 50%;

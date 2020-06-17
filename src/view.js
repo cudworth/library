@@ -73,18 +73,6 @@ function View() {
     self[block].append(div);
   }
 
-  /*
-  function drawDetailCard(keys, obj) {
-    const card = createAndAppendElement(self.content, 'div', {
-      class: 'detail_card',
-    });
-    keys.forEach((key) => {
-      const div = createAndAppendElement(card, 'div', { class: 'field' });
-      div.textContent = `${titleCase(key)}: ${obj[key]}`;
-    });
-  }
-  */
-
   function drawButton(block, text, onClick) {
     const button = document.createElement('button');
     button.textContent = text;
@@ -180,26 +168,32 @@ function View() {
 
   function createCarousel(block, width, height, images) {
     const carousel = {};
-    let currentSlide = 0;
-    const navLinkIcons = [];
-    const navLinkWidth = `${(1 / images.length) * 100}%`;
+    carousel.currentSlide = 0;
+    carousel.navLinkIcons = [];
+    carousel.navLinkWidth = `${(1 / images.length) * 100}%`;
 
-    function changeSlide(index) {
-      navLinkIcons[currentSlide].className = 'carousel_icon';
-      currentSlide = index;
-      navLinkIcons[currentSlide].className = 'carousel_icon_selected';
+    function gotoSlide(index) {
+      carousel.navLinkIcons[carousel.currentSlide].className =
+        'carousel_navIcon';
+      carousel.currentSlide = index;
+      carousel.navLinkIcons[carousel.currentSlide].className =
+        'carousel_navIcon_selected';
       carousel.slides.style.left = `${-100 * index}%`;
     }
 
     function nextSlide() {
-      if (currentSlide < images.length - 1) {
-        changeSlide(currentSlide + 1);
+      if (carousel.currentSlide === images.length - 1) {
+        gotoSlide(0);
+      } else {
+        gotoSlide(carousel.currentSlide + 1);
       }
     }
 
     function prevSlide() {
-      if (currentSlide > 0) {
-        changeSlide(currentSlide - 1);
+      if (carousel.currentSlide === 0) {
+        gotoSlide(images.length - 1);
+      } else {
+        gotoSlide(carousel.currentSlide - 1);
       }
     }
 
@@ -219,6 +213,14 @@ function View() {
       carousel.frame.style.width = width;
       carousel.frame.style.height = height;
 
+      carousel.frame.addEventListener('mouseover', () => {
+        carousel.navBar.className = 'carousel_navBar';
+      });
+
+      carousel.frame.addEventListener('mouseout', () => {
+        carousel.navBar.className = 'hidden';
+      });
+
       carousel.prevBtn.addEventListener('click', () => prevSlide());
       carousel.nextBtn.addEventListener('click', () => nextSlide());
 
@@ -232,38 +234,27 @@ function View() {
 
         const navLink = document.createElement('div');
         navLink.className = 'carousel_navLink';
-        navLink.style.width = navLinkWidth;
+        navLink.style.width = carousel.navLinkWidth;
         navLink.addEventListener('click', () => {
-          changeSlide(i);
+          gotoSlide(i);
         });
 
-        const icon = document.createElement('div');
-        icon.className = 'carousel_icon';
-        navLink.append(icon);
-        navLinkIcons.push(icon);
+        const navIcon = document.createElement('div');
+        navIcon.className = 'carousel_navIcon';
+        navLink.append(navIcon);
+        carousel.navLinkIcons.push(navIcon);
         carousel.navBar.append(navLink);
       }
 
-      carousel.frame.addEventListener('mouseover', () => {
-        carousel.navBar.className = 'carousel_navBar';
-      });
-
-      carousel.frame.addEventListener('mouseout', () => {
-        carousel.navBar.className = 'hidden';
-      });
-
-      changeSlide(0);
-
       self[block].append(carousel.frame);
+
+      gotoSlide(0);
+      setInterval(() => {
+        nextSlide();
+      }, 6000);
     }
 
     initCarousel();
-  }
-
-  function setAttributes(element, attributes) {
-    Object.keys(attributes).forEach((key) => {
-      element.setAttribute(key.toString(), attributes[key]);
-    });
   }
 
   init();
