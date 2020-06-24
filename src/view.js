@@ -12,20 +12,43 @@ function View() {
     self.root.append(self.header, self.body, self.footer);
   }
 
-  /*
-  function drawForm(keys, obj) {
-    const form = createAndAppendElement(self.content, 'form', {});
-    const ol = createAndAppendElement(form, 'ol', {});
-    keys.forEach((key) => {
-      const li = createAndAppendElement(ol, 'li', {});
-      const label = createAndAppendElement(li, 'label', { for: key });
-      label.textContent = titleCase(key);
-      const input = createAndAppendElement(li, 'input', {
-        name: key,
-        type: 'text',
+  function drawForm(block, fields) {
+    const form = document.createElement('form');
+    const submitBtn = document.createElement('button');
+    form.className = 'form';
+    submitBtn.className = 'form_submit_btn';
+    submitBtn.textContent = 'Submit';
+
+    fields.forEach((field) => {
+      const div = document.createElement('div');
+      const label = document.createElement('label');
+      const input = document.createElement('input');
+      input.addEventListener('focusout', () => {
+        if (input.checkValidity()) {
+          input.className = 'form_input_valid';
+        } else {
+          input.className = 'form_input_invalid';
+        }
       });
-      input.value = obj[key];
+
+      div.className = 'form_field';
+      label.className = 'form_label';
+      input.className = 'form_input';
+
+      Object.keys(field.label).forEach((key) => {
+        label[key] = field.label[key];
+      });
+
+      Object.keys(field.input).forEach((key) => {
+        input[key] = field.input[key];
+      });
+
+      div.append(label, input);
+      form.append(div);
     });
+
+    form.append(submitBtn);
+    self[block].append(form);
   }
 
   function readForm() {
@@ -38,7 +61,6 @@ function View() {
     });
     return obj;
   }
-  */
 
   function clear(block) {
     while (self[block].lastChild) {
@@ -271,6 +293,8 @@ function View() {
     createDropMenu,
     createDrawer,
     createCarousel,
+    drawForm,
+    readForm,
   };
 }
 
